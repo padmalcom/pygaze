@@ -4,7 +4,7 @@ import os
 import pathlib
 import torch
 import cv2
-from gaze_estimator import GazeEstimator
+from .gaze_estimator import GazeEstimator
 
 class GazeResult:
 	def __init__(self):

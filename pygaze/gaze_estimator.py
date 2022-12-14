@@ -5,14 +5,14 @@ import numpy as np
 import torch
 from omegaconf import DictConfig
 
-from common.camera import Camera
-from common.face import Face
-from common.face_parts import FacePartsName
-from head_pose_estimation.head_pose_normalizer import HeadPoseNormalizer
-from head_pose_estimation.face_landmark_estimator import LandmarkEstimator
-from models import create_model
-from transforms import create_transform
-from common.face_model_mediapipe import FaceModelMediaPipe
+from .common.camera import Camera
+from .common.face import Face
+from .common.face_parts import FacePartsName
+from .head_pose_estimation.head_pose_normalizer import HeadPoseNormalizer
+from .head_pose_estimation.face_landmark_estimator import LandmarkEstimator
+from .models import create_model
+from .transforms import create_transform
+from .common.face_model_mediapipe import FaceModelMediaPipe
 
 class GazeEstimator:
 	EYE_KEYS = [FacePartsName.REYE, FacePartsName.LEYE]

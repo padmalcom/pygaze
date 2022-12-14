@@ -1,0 +1,3 @@
+include pygaze/config/eth-xgaze.yaml
+include pygaze/data/calib/sample_params.yaml
+include pygaze/data/normalized_camera_params/eth-xgaze.yaml
