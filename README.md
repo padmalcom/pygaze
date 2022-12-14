@@ -1,14 +1,13 @@
 # pygaze
 pygaze is a wrapper for the outstanding work of [pytorch_mpiigaze_demo](https://github.com/hysts/pytorch_mpiigaze_demo) and [eth-xgaze](https://ait.ethz.ch/projects/2020/ETH-XGaze/) to provide an api to estimate the gaze of humans, either on images or in realtime.
 
-![Gaze](img/gaze.png)
+![Gaze](img/gaze.png | width=200)
 
 <a href="https://www.buymeacoffee.com/padmalcom" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 ## API
 - First create an instance of *PyGaze*.
 - Call *predict* on the instance to get a list of faces in the image and a gaze vector.
-- See the example below to see what information you get on the data.
 
 ## Example usage
 ```python
