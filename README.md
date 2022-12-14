@@ -1,5 +1,5 @@
 # pygaze
-pygaze is a wrapper for the outstanding work of [pytorch_mpiigaze_demo](https://github.com/hysts/pytorch_mpiigaze_demo) and [eth-xgaze](https://ait.ethz.ch/projects/2020/ETH-XGaze/) to provide an api to estimate the gaze of humans.
+pygaze is a wrapper for the outstanding work of [pytorch_mpiigaze_demo](https://github.com/hysts/pytorch_mpiigaze_demo) and [eth-xgaze](https://ait.ethz.ch/projects/2020/ETH-XGaze/) to provide an api to estimate the gaze of humans, either on images or in realtime.
 
 ![Gaze](img/gaze.png)
 
@@ -8,6 +8,7 @@ pygaze is a wrapper for the outstanding work of [pytorch_mpiigaze_demo](https://
 ## API
 - First create an instance of *PyGaze*.
 - Call *predict* on the instance to get a list of faces in the image and a gaze vector.
+- See the example below to see what information you get on the data.
 
 ## Example usage
 ```python
@@ -24,10 +25,13 @@ for face in gaze_result:
     print(f"Face angles: pitch={pitch}, yaw={yaw}, roll={roll}.")
     print(f"Distance to camera: {face.distance}")
     print(f"Gaze angles: pitch={g_pitch}, yaw={g_yaw}")
-	print(f"Gaze vector: {face.gaze_vector}")
+    print(f"Gaze vector: {face.gaze_vector}")
+	
+    img = pg.render(image, face, draw_face_bbox=True, draw_face_landmarks=False, draw_3dface_model=False,draw_head_pose=False, draw_gaze_vector=True)
+    cv2.imshow("Face", img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 ```
 
 ## Todo
 - Add a flag to *predict()* to pass already detected faces in an image.
-- Add a function *render(img, face)* to draw the predicted gaze to an image.
-- Add examples for realtime and image prediction.
