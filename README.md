@@ -1,7 +1,7 @@
 # pygaze
 pygaze is a wrapper for the outstanding work of [pytorch_mpiigaze_demo](https://github.com/hysts/pytorch_mpiigaze_demo) and [eth-xgaze](https://ait.ethz.ch/projects/2020/ETH-XGaze/) to provide an api to estimate the gaze of humans.
 
-![Gaze](img/gaze.jpg)
+![Gaze](img/gaze.png)
 
 <a href="https://www.buymeacoffee.com/padmalcom" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
