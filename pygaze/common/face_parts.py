@@ -10,7 +10,6 @@ class FacePartsName(enum.Enum):
 	REYE = enum.auto()
 	LEYE = enum.auto()
 
-
 class FaceParts:
 	def __init__(self, name: FacePartsName):
 		self.name = name
@@ -25,7 +24,7 @@ class FaceParts:
 		self.gaze_vector: Optional[np.ndarray] = None
 		
 	def __repr__(self):
-		return f'FaceParts(name={self.name}, center={self.center}, gaze_vector={self.gaze_vector}'
+		return f'FaceParts(name={self.name}, center={self.center}, gaze_vector={self.gaze_vector}, normalized_gaze_vector={self.normalized_gaze_vector})'
 
 	@property
 	def distance(self) -> float:

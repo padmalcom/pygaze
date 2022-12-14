@@ -18,7 +18,7 @@ class Face(FaceParts):
 		self.model3d: Optional[np.ndarray] = None
 		
 	def __repr__(self):
-		return f'Face(bbox={self.bbox}, right_eye={self.reye}, left_eye={self.leye}, head_position={self.head_position}, model3d={self.model3d}'
+		return f'Face(box={self.bbox}, right_eye={self.reye}, left_eye={self.leye}, head_position={self.head_position}, model3d={self.model3d})'
 
 	@staticmethod
 	def change_coordinate_system(euler_angles: np.ndarray) -> np.ndarray:

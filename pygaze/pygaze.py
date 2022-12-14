@@ -4,6 +4,9 @@ import os
 import pathlib
 import torch
 import cv2
+import numpy as np
+from scipy.spatial.transform import Rotation
+from .utils import get_3d_face_model
 from .gaze_estimator import GazeEstimator
 
 class GazeResult:
@@ -27,7 +30,7 @@ class PyGaze:
 		return output_path
 
 	def __init__(self, device="cpu", model_path = "~/.ptgaze/models"):
-	
+
 		self.config = OmegaConf.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config/eth-xgaze.yaml'))
 		self.config.PACKAGE_ROOT = pathlib.Path(__file__).parent.resolve().as_posix()
 		self.config.device = device
@@ -38,7 +41,13 @@ class PyGaze:
 			logger.warning("{} is a file path but a directory is required. Removing the filename...", self.config.gaze_estimator.checkpoint)
 			self.config.gaze_estimator.checkpoint = os.path.dirname(self.config.gaze_estimator.checkpoint)
 		self.config.gaze_estimator.checkpoint = self.__download_model__(self.config.gaze_estimator.checkpoint)
-		
+
+		# for visualization only
+		self.head_pose_axis_length = 0.05
+		self.AXIS_COLORS = [(0, 0, 255), (0, 255, 0), (255, 0, 0)]
+		self.face_3d_model = get_3d_face_model(self.config)
+
+
 		# initialize
 		self.gaze_estimator = GazeEstimator(self.config)
 				
@@ -66,4 +75,44 @@ class PyGaze:
 			#self._draw_gaze_vector(face)
 			#self._display_normalized_image(face)
 		return faces
+
+	def render(self, img, face, draw_face_bbox=True, draw_face_landmarks=False, draw_3dface_model=False, draw_head_pose=True):
+		image = img.copy()
+		size = 1
+		color = (0, 255, 0)
+
+		if draw_face_bbox:
+			bbox = np.round(face.bbox).astype(np.int).tolist()
+			image = cv2.rectangle(image, tuple(bbox[0]), tuple(bbox[1]), color, size)
+
+		if draw_face_landmarks:
+			for pt in face.landmarks:
+				pt = tuple(np.round(pt).astype(np.int).tolist())
+				image = cv2.circle(image, pt, size, color, cv2.FILLED)
+
+		if draw_3dface_model:
+			points2d = self.gaze_estimator.camera.project_points(face.model3d)
+			for pt in points2d:
+				pt = tuple(np.round(pt).astype(np.int).tolist())
+				image = cv2.circle(image, pt, size, color, cv2.FILLED)
+
+		if draw_head_pose:
+
+			# Get the axes of the model coordinate system
+			axes3d = np.eye(3, dtype=np.float) @ Rotation.from_euler('XYZ', [0, np.pi, 0]).as_matrix()
+			axes3d = axes3d * self.head_pose_axis_length
+			axes2d = self.gaze_estimator.camera.project_points(axes3d, face.head_pose_rot.as_rotvec(), face.head_position)
+			center = face.landmarks[self.face_3d_model.NOSE_INDEX]
+			center = tuple(np.round(center).astype(np.int).tolist())
+			for pt, color in zip(axes2d, self.AXIS_COLORS):
+				pt = tuple(np.round(pt).astype(np.int).tolist())
+				image = cv2.line(image, center, pt, color, 2, cv2.LINE_AA)
+
+			euler_angles = face.head_pose_rot.as_euler('XYZ', degrees=True)
+			pitch, yaw, roll = face.change_coordinate_system(euler_angles)
+			logger.info(f'[head] pitch: {pitch:.2f}, yaw: {yaw:.2f}, ' f'roll: {roll:.2f}, distance: {face.distance:.2f}')
+		
+		
+
+		return image
 			

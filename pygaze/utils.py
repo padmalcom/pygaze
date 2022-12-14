@@ -9,9 +9,8 @@ import torch.hub
 import yaml
 from omegaconf import DictConfig
 
-from common.face_model import FaceModel
-from common.face_model_68 import FaceModel68
-from common.face_model_mediapipe import FaceModelMediaPipe
+from .common.face_model import FaceModel
+from .common.face_model_mediapipe import FaceModelMediaPipe
 
 
 def get_3d_face_model(config: DictConfig) -> FaceModel:
