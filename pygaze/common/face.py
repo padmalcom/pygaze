@@ -1,5 +1,5 @@
 from typing import Optional
-
+from loguru import logger
 import numpy as np
 
 from .eye import Eye
@@ -16,6 +16,18 @@ class Face(FaceParts):
 
 		self.head_position: Optional[np.ndarray] = None
 		self.model3d: Optional[np.ndarray] = None
+
+	def get_head_angles(self):
+		euler_angles = self.head_pose_rot.as_euler('XYZ', degrees=True)
+		pitch, yaw, roll = self.change_coordinate_system(euler_angles)
+		return pitch, yaw, roll
+
+	def get_gaze_angles(self):
+		pitch, yaw = np.rad2deg(self.vector_to_angle(self.gaze_vector))
+		return pitch, yaw
+
+	def get_distance(self):
+		return self.distance
 		
 	def __repr__(self):
 		return f'Face(box={self.bbox}, right_eye={self.reye}, left_eye={self.leye}, head_position={self.head_position}, model3d={self.model3d})'

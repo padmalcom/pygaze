@@ -44,6 +44,7 @@ class PyGaze:
 
 		# for visualization only
 		self.head_pose_axis_length = 0.05
+		self.gaze_visualization_length = 0.05
 		self.AXIS_COLORS = [(0, 0, 255), (0, 255, 0), (255, 0, 0)]
 		self.face_3d_model = get_3d_face_model(self.config)
 
@@ -57,26 +58,13 @@ class PyGaze:
 			logger.warning("Invalid image.")
 			return results
 			
-		undistorted = cv2.undistort(img, self.gaze_estimator.camera.camera_matrix, self.gaze_estimator.camera.dist_coefficients)
-		#cv2.imshow("undistorted", undistorted)
-		#cv2.waitKey(0) # waits until a key is pressed
-		#cv2.destroyAllWindows()
-		
+		undistorted = cv2.undistort(img, self.gaze_estimator.camera.camera_matrix, self.gaze_estimator.camera.dist_coefficients)		
 		faces = self.gaze_estimator.detect_faces(undistorted)
-		logger.debug("Found {} face(s).", len(faces))
-
 		for face in faces:
-			print(face)
 			self.gaze_estimator.estimate_gaze(undistorted, face)
-			#self._draw_face_bbox(face)
-			#self._draw_head_pose(face)
-			#self._draw_landmarks(face)
-			#self._draw_face_template_model(face)
-			#self._draw_gaze_vector(face)
-			#self._display_normalized_image(face)
 		return faces
 
-	def render(self, img, face, draw_face_bbox=True, draw_face_landmarks=False, draw_3dface_model=False, draw_head_pose=True):
+	def render(self, img, face, draw_face_bbox=True, draw_face_landmarks=True, draw_3dface_model=True,draw_head_pose=True, draw_gaze_vector=True):
 		image = img.copy()
 		size = 1
 		color = (0, 255, 0)
@@ -97,8 +85,6 @@ class PyGaze:
 				image = cv2.circle(image, pt, size, color, cv2.FILLED)
 
 		if draw_head_pose:
-
-			# Get the axes of the model coordinate system
 			axes3d = np.eye(3, dtype=np.float) @ Rotation.from_euler('XYZ', [0, np.pi, 0]).as_matrix()
 			axes3d = axes3d * self.head_pose_axis_length
 			axes2d = self.gaze_estimator.camera.project_points(axes3d, face.head_pose_rot.as_rotvec(), face.head_position)
@@ -108,11 +94,14 @@ class PyGaze:
 				pt = tuple(np.round(pt).astype(np.int).tolist())
 				image = cv2.line(image, center, pt, color, 2, cv2.LINE_AA)
 
-			euler_angles = face.head_pose_rot.as_euler('XYZ', degrees=True)
-			pitch, yaw, roll = face.change_coordinate_system(euler_angles)
-			logger.info(f'[head] pitch: {pitch:.2f}, yaw: {yaw:.2f}, ' f'roll: {roll:.2f}, distance: {face.distance:.2f}')
-		
-		
-
+		if draw_gaze_vector:
+			start = face.center
+			end = face.center + self.gaze_visualization_length * face.gaze_vector
+			points3d = np.vstack([start, end])
+			points2d = self.gaze_estimator.camera.project_points(points3d)
+			pt0 = tuple(np.round(points2d[0]).astype(np.int).tolist())#(points2d[0])
+			pt1 = tuple(np.round(points2d[1]).astype(np.int).tolist())#(points2d[1])
+			image = cv2.line(image, pt0, pt1, color, 1, cv2.LINE_AA)
+			
 		return image
 			
