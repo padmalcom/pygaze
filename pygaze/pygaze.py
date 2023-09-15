@@ -31,6 +31,8 @@ class PyGaze:
 		self.config.PACKAGE_ROOT = pathlib.Path(__file__).parent.resolve().as_posix()
 		self.config.device = device
 		
+		self.CENTER_THRESHOLD = 0.2
+		
 		# check the model path and download the model
 		self.config.gaze_estimator.checkpoint = os.path.abspath(model_path)
 		if os.path.isfile(self.config.gaze_estimator.checkpoint):
@@ -54,7 +56,7 @@ class PyGaze:
 		return faces
 		
 	def look_at_camera(self, face):
-		return face.gaze_vector[0] > -0.2 and face.gaze_vector[0] < 0.2 and face.gaze_vector[1] > -0.5 and face.gaze_vector[1] < 0.2
+		return face.gaze_vector[0] > -self.CENTER_THRESHOLD and self.CENTER_THRESHOLD and -self.CENTER_THRESHOLD and self.CENTER_THRESHOLD
 		
 class PyGazeRenderer:
 	def __init__(self):
@@ -71,7 +73,7 @@ class PyGazeRenderer:
 		size = 1
 
 		if draw_face_bbox:
-			bbox = np.round(face.bbox).astype(np.int).tolist()
+			bbox = np.round(face.bbox).astype(int).tolist()
 			cv2.rectangle(img, tuple(bbox[0]), tuple(bbox[1]), color, size)
 
 		if draw_face_landmarks:
@@ -100,7 +102,7 @@ class PyGazeRenderer:
 			end = face.center + self.gaze_visualization_length * face.gaze_vector
 			points3d = np.vstack([start, end])
 			points2d = self.camera.project_points(points3d)
-			pt0 = tuple(np.round(points2d[0]).astype(np.int).tolist())
-			pt1 = tuple(np.round(points2d[1]).astype(np.int).tolist())
+			pt0 = tuple(np.round(points2d[0]).astype(int).tolist())
+			pt1 = tuple(np.round(points2d[1]).astype(int).tolist())
 			cv2.line(img, pt0, pt1, color, 1, cv2.LINE_AA)
 			

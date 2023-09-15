@@ -3,10 +3,16 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from pygaze import PyGaze, PyGazeRenderer
 import cv2
+import math
 
 pg = PyGaze(model_path="models/eth-xgaze_resnet18.pth")
 pgren = PyGazeRenderer()
 v = cv2.VideoCapture(0)
+min_x = 100.0
+max_x = -100.0
+min_y = 100.0
+max_y = -100.0
+
 while True:
 	ret, frame = v.read()
 	if ret:
