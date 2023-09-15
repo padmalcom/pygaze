@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pygaze",
-    version="0.1.0",
+    version="1.1.2",
 	license="MIT",
     author="Jonas Freiknecht",
     author_email="j.freiknecht@googlemail.com",
