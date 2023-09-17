@@ -31,7 +31,10 @@ class PyGaze:
 		self.config.PACKAGE_ROOT = pathlib.Path(__file__).parent.resolve().as_posix()
 		self.config.device = device
 		
-		self.CENTER_THRESHOLD = 0.2
+		self.CENTER_X = -0.01821846597470783
+		self.CENTER_Y = -0.17080051119284462
+		self.CENTER_THRESHOLD_X = 0.5
+		self.CENTER_THRESHOLD_Y = 0.3
 		
 		# check the model path and download the model
 		self.config.gaze_estimator.checkpoint = os.path.abspath(model_path)
@@ -56,7 +59,7 @@ class PyGaze:
 		return faces
 		
 	def look_at_camera(self, face):
-		return face.gaze_vector[0] > -self.CENTER_THRESHOLD and self.CENTER_THRESHOLD and -self.CENTER_THRESHOLD and self.CENTER_THRESHOLD
+		return face.gaze_vector[0] > self.CENTER_X - self.CENTER_THRESHOLD_X and face.gaze_vector[0] < self.CENTER_X + self.CENTER_THRESHOLD_X and face.gaze_vector[1] > self.CENTER_Y - self.CENTER_THRESHOLD_Y and face.gaze_vector[1] < self.CENTER_Y + self.CENTER_THRESHOLD_Y
 		
 class PyGazeRenderer:
 	def __init__(self):

@@ -18,6 +18,7 @@ for face in gaze_result:
     print(f"Distance to camera: {face.distance}")
     print(f"Gaze angles: pitch={g_pitch}, yaw={g_yaw}")
     print(f"Gaze vector: {face.gaze_vector}")
+    print(f"Looking at camera: {pg.look_at_camera(face)}")
     pgren.render(image, face, draw_face_bbox=True, draw_face_landmarks=False, draw_3dface_model=False,draw_head_pose=False, draw_gaze_vector=True)
     cv2.imshow("Face", image)
     cv2.waitKey(0)
