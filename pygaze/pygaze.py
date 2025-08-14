@@ -49,7 +49,7 @@ class PyGaze:
 	def predict(self, img):
 		results = []
 		if img is None:
-			logger.warning("Invalid image.")
+			logger.warning("Invalid image. img is none.")
 			return results
 			
 		undistorted = cv2.undistort(img, self.gaze_estimator.camera.camera_matrix, self.gaze_estimator.camera.dist_coefficients)		
@@ -81,23 +81,23 @@ class PyGazeRenderer:
 
 		if draw_face_landmarks:
 			for pt in face.landmarks:
-				pt = tuple(np.round(pt).astype(np.int).tolist())
+				pt = tuple(np.round(pt).astype(int).tolist())
 				cv2.circle(img, pt, size, color, cv2.FILLED)
 
 		if draw_3dface_model:
 			points2d = self.camera.project_points(face.model3d)
 			for pt in points2d:
-				pt = tuple(np.round(pt).astype(np.int).tolist())
+				pt = tuple(np.round(pt).astype(int).tolist())
 				cv2.circle(img, pt, size, color, cv2.FILLED)
 
 		if draw_head_pose:
-			axes3d = np.eye(3, dtype=np.float) @ Rotation.from_euler('XYZ', [0, np.pi, 0]).as_matrix()
+			axes3d = np.eye(3, dtype=float) @ Rotation.from_euler('XYZ', [0, np.pi, 0]).as_matrix()
 			axes3d = axes3d * self.head_pose_axis_length
 			axes2d = self.camera.project_points(axes3d, face.head_pose_rot.as_rotvec(), face.head_position)
 			center = face.landmarks[self.face_3d_model.NOSE_INDEX]
-			center = tuple(np.round(center).astype(np.int).tolist())
+			center = tuple(np.round(center).astype(int).tolist())
 			for pt, color in zip(axes2d, self.AXIS_COLORS):
-				pt = tuple(np.round(pt).astype(np.int).tolist())
+				pt = tuple(np.round(pt).astype(int).tolist())
 				cv2.line(img, center, pt, color, 2, cv2.LINE_AA)
 
 		if draw_gaze_vector:
@@ -109,3 +109,4 @@ class PyGazeRenderer:
 			pt1 = tuple(np.round(points2d[1]).astype(int).tolist())
 			cv2.line(img, pt0, pt1, color, 1, cv2.LINE_AA)
 			
+		return img
