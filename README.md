@@ -3,7 +3,7 @@ PyGaze is a wrapper for the outstanding work of [pytorch_mpiigaze_demo](https://
 
 ![Gaze](https://raw.githubusercontent.com/padmalcom/pygaze/main/img/gaze.png)
 
-<a href="https://www.buymeacoffee.com/padmalcom" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y11M25J7)
 
 ## Installation
 ```pip install pygaze```
